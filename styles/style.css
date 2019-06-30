@@ -1,0 +1,65 @@
+/* Set height of body and the document to 100% to enable "full page tabs" */
+body,
+html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Style tab links */
+.tablink {
+  background-color: #1979ca;
+  color: white;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-size: 17px;
+  width: 15%;
+  border-radius: 5px;
+  margin: 20px 5px 5px 25px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+}
+
+.tablink:hover {
+  background-color: #fff;
+  color: #1979ca;
+  transition: all 0.2s ease-out;
+}
+
+/* Style the tab content (and add height:100% for full page content) */
+.tabcontent {
+  color: #1979ca;
+  display: none;
+  padding: 100px 20px;
+  height: 100%;
+}
+
+/* Style the table */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  color: #1979ca;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  text-align: center;
+} 
+
+th {
+  background-color: #fff;
+  color: #1979ca;
+}
+
+tr:nth-child(even) {
+  background-color: #1979ca
+}
+
+#Logs {
+  background-color: #fff;
+}
+#Graph {
+  background-color: #fff;
+}
+
