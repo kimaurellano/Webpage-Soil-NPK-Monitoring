@@ -21,6 +21,7 @@ html {
   margin: 20px 5px 5px 25px;
   font-family: 'Montserrat', sans-serif;
   font-size: 22px;
+  font-weight: bold;
 }
 
 .tablink:hover {
@@ -32,7 +33,6 @@ html {
 /* Style the tab content (and add height:100% for full page content) */
 .tabcontent {
   color: #1979ca;
-  display: none;
   padding: 100px 20px;
 }
 
@@ -58,66 +58,77 @@ tr:nth-child(even) {
 #Logs {
   background-color: #fff;
 }
+
 #Graph {
   background-color: #fff;
 }
 
-.Field_1 {  
-  opacity: 1;
-  fill: #b2d2ed;
-  stroke: #1979ca;
+/* Map tab content */
+#Map {
+  width: auto;
+  height: auto;
 }
 
-.Field_2 {  
-  opacity: 1;
-  fill: #b2d2ed;
-  stroke: #1979ca;
-}
-
-.Field_3 {  
-  opacity: 1;
-  fill: #b2d2ed;
-  stroke: #1979ca;
-}
-
-.Field_4 {  
-  opacity: 1;
-  fill: #b2d2ed;
-  stroke: #1979ca;
-}
-
-.Field_5 {  
-  opacity: 1;
-  fill: #b2d2ed;
-  stroke: #1979ca;
-}
-
-.Field_6 {  
-  opacity: 1;
-  fill: #b2d2ed;
-  stroke: #1979ca;
-}
-
-.svg-map {
+/* Map's 2D display */
+.map-detail {
   position: absolute;
-  width: 35%;
-  height: 80%;
-  z-index: -1;
-  background-color: #f2f2f2;
+  margin-left: 10%;
+  width: 40%;
+  height: 40%;
 }
 
-.svg-map-direction {
-  position: absolute;
-  width: 100%;
-  height: 200px;
-  z-index: 1;
+/* The NPK contents and the left-right nav buttons */
+.soil-npk-content {
+  /* border: 1px solid #ccc; */
+  margin-left: 55%;
+  margin-top: 5%;
+  height: 40%;
+  width: 40%;
+  position: relative;
 }
 
-.NPK-content-container {
+/* The list */
+.soil-npk-content > .npk-text > ul > li {
+  list-style-position: inside;
+  list-style-type: none;
+  font-size: 20px;
+}
+
+.soil-npk-content > .npk-text > ul > li:nth-child(1n + 2) {
+  margin-top: 5%;
   text-align: center;
-  margin-left: 400px;
 }
 
-.NPK-content-container h3{
-  margin-top: 80px;
+.soil-npk-content > .npk-text > ul > li:first-child {
+  margin-top: 0%;
+  text-align: center;
+  font-weight: bold;
+}
+
+.soil-npk-content > .nav {
+  width: 10%;
+  height: 10%;
+  top: 35%;
+}
+
+.soil-npk-content > .nav-left {
+  position: absolute;
+  left: 10%;
+}
+
+.soil-npk-content > .nav-right {
+  position: absolute;
+  right: 0%;
+}
+
+.soil-npk-content > .nav > path:hover {
+  display: block;
+  fill: #519edd;
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+}
+
+.page-indicator {
+  display: block;
+  margin: auto;
 }
