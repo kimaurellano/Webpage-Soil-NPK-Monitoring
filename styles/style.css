@@ -87,13 +87,14 @@ tr:nth-child(even) {
   position: relative;
 }
 
-/* The list */
+/* The soil type */
 .soil-npk-content > .npk-text > ul > li {
   list-style-position: inside;
   list-style-type: none;
   font-size: 20px;
 }
 
+/* The NPK contents */
 .soil-npk-content > .npk-text > ul > li:nth-child(1n + 2) {
   margin-top: 5%;
   text-align: center;

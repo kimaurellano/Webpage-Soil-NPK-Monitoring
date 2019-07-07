@@ -13,7 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
     
     <!-- Javascript -->
-    <script src="js/tab.js"></script>
+    <script src="js/scripts.js"></script>
     <script type="text/javascript" src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     
     <!-- CSS -->
@@ -34,9 +34,6 @@
   <body onload="defaultTab()">
       <script>
           $(document).ready( function () {
-            // Defines table native appearance  
-            $("#myTable").DataTable();
-
             var soilTypes = ["NITROGEN", "PHOSPHOROUS", "POTASSIUM"];
             var curSelected = 1;
             
@@ -50,36 +47,67 @@
                 "fill": "#519edd"
               });
             });
-
+            
+            // Left nav button
             $(".soil-npk-content > .nav-left > path").on("click", function() {
+              $(".npk-text > ul > li").fadeOut(300, function() {
+                $(".soil-content-type").text(soilTypes[curSelected] + " CONTENT");
+              }).fadeIn(300);
+              
               if(curSelected < 1) {
                 return;
               }
 
               curSelected -= 1;
 
+              // Update NPK values by soil type
+              getNPKContent(soilTypes[curSelected]);
+            });
+            
+            // Right nav button
+            $(".soil-npk-content > .nav-right > path").on("click", function() {
               $(".npk-text > ul > li").fadeOut(300, function() {
                 $(".soil-content-type").text(soilTypes[curSelected] + " CONTENT");
               }).fadeIn(300);
-            });
 
-            $(".soil-npk-content > .nav-right > path").on("click", function() {
               if(curSelected > 1) {
                 return;
               }
 
               curSelected += 1;
 
-              $(".npk-text > ul > li").fadeOut(300, function() {
-                $(".soil-content-type").text(soilTypes[curSelected] + " CONTENT");
-              }).fadeIn(300);
+              // Update NPK values by soil type
+              getNPKContent(soilTypes[curSelected]);
             });
           } );
-        </script>
+
+          function getNPKContent(soilType) {
+            $(document).ready(function () {
+              // Fetch the soil type
+              soilType = soilType.split(" ")[0].toLowerCase();
+              
+              var xmlhttp = new XMLHttpRequest();
+              xmlhttp.open("GET", "php/NPKContents.php?soil=" + soilType, true);
+              xmlhttp.send();
+                
+              xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState === XMLHttpRequest.DONE && xmlhttp.status === 200) {
+                  // The result we get from the URL
+                  var jsonData = JSON.parse(xmlhttp.responseText);
+                  var idx = 1;
+                  jsonData.forEach(element => {
+                    document.getElementById("field-" + idx).innerHTML = "Field " + idx + ": " + element[soilType] + "%";
+                    idx += 1;
+                  });
+                }
+              }
+            });
+          }
+      </script>
 
     <!-- The tab buttons -->
     <button class="tablink" onclick="openPage('Logs', this)">LOGS</button>
-    <button class="tablink" onclick="openPage('Graph', this), lineChart()">GRAPH</button>
+    <button class="tablink" onclick="openPage('Graph', this)">GRAPH</button>
     <button id="defaultOpen" class="tablink" onclick="openPage('Map', this)">MAP</button>
     
     <!-- Logs content -->
@@ -100,14 +128,10 @@
         <tbody>
         <!-- PHP script -->
         <?php 
-          $conn = mysqli_connect("localhost", "root", "admin123", "mysql");
-    
-          // Check connection
-          if (!$conn) {
-              die ("failed");
-          }
-        
-          $query = mysqli_query($conn, "SELECT * FROM mysql.Soil_Data");
+          // Connection to the database
+          include "php/DatabaseManager.php";
+          
+          $query = mysqli_query($connection, "SELECT * FROM mysql.Soil_Data");
           
           while($result_metadata = mysqli_fetch_assoc($query)){
             echo 
@@ -120,8 +144,6 @@
               <td> " . $result_metadata['potassium'] . "</td>
             </tr>";
           }
-          
-          $conn -> close();
         ?>
         </tbody>
       </table>
@@ -178,15 +200,15 @@
           <path fill="#1979ca" d="M99.22 0H38.01L0 101l38.01 101h61.21L61.21 101 99.22 0z"/>
         </svg>
         <div class="npk-text">
-            <ul>
-              <li class="soil-content-type">PHOSPHOROUS CONTENT</li>
-              <li class="field-1">Field 1: 0%</li>
-              <li class="field-2">Field 2: 0%</li>
-              <li class="field-3">Field 3: 0%</li>
-              <li class="field-4">Field 4: 0%</li>
-              <li class="field-5">Field 5: 0%</li>
-              <li class="field-6">Field 6: 0%</li>
-            </ul>
+          <ul>
+            <li class="soil-content-type">PHOSPHOROUS CONTENT</li>
+            <li id="field-1">Field 1: 0%</li>
+            <li id="field-2">Field 2: 0%</li>
+            <li id="field-3">Field 3: 0%</li>
+            <li id="field-4">Field 4: 0%</li>
+            <li id="field-5">Field 5: 0%</li>
+            <li id="field-6">Field 6: 0%</li>
+          </ul>
         </div>
         <svg class="page-indicator" height="100" width="125">
             <circle class="page-0" cx="50" cy="50" r="5" stroke="none" stroke-width="3" fill="#ccc" />
