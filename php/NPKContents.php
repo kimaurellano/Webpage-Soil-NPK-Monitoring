@@ -1,8 +1,6 @@
 <?php 
 	include $_SERVER['DOCUMENT_ROOT'] . "/php/DatabaseManager.php"; 
 	
-	$soilTypes = ["nitrogen", "phosphorous", "potassium"];
-
 	$soil = strval($_GET["soil"]);
 
 	// Only get the last/latest values from the database
