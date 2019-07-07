@@ -57,20 +57,51 @@ function loadLineChart() {
   $.ajax({
     type: "GET",
     url: "php/NPKContents.php?soil=*",
-    success: function (data) { 
-      var jsonData = JSON.parse(data);
+    success: function (result) {
+      var jsonData = JSON.parse(result);
+
+      var labels = jsonData.map((e) => {
+        return e.time;
+      });
+
+      var n = jsonData.map((e) => { 
+        return e.nitrogen;
+      });
+
+      var p = jsonData.map((e) => { 
+        return e.phosphorous;
+      });
+
+      var k = jsonData.map((e) => { 
+        return e.potassium;
+      });
+
       var context = document.getElementById("myChart").getContext("2d");
-      new Chart(context, {
+      var config = {
         type: "line",
         data: {
+          labels: labels,
           datasets: [{
-            label: "NPK Values",
-            data: jsonData,
-            borderColor: 'rgba(75, 192, 192, 1)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            label: "Nitrogen",
+            data: n,
+            borderColor: "rgba(17, 0, 255, 1)",
+            fill: false,
+          }, {
+            label: "Phosphorous",
+            data: p,
+            borderColor: "rgba(86, 255, 0, 1)",
+            fill: false
+          }, {
+            label: "Potassium",
+            data: k,
+            borderColor: "rgba(255, 173, 0, 1)",
+            fill: false
           }]
         }
-      })
+      };
+
+      // Create chart instance
+      new Chart(context, config);
     }
   });
 }
