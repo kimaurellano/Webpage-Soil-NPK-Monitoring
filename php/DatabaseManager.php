@@ -3,6 +3,7 @@
         
 	// Check connection
 	if (!$connection) {
-		die ("failed");
+		echo $connection -> error;
+		exit();
 	}
 ?>

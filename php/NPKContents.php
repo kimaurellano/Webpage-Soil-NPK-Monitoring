@@ -1,11 +1,15 @@
 <?php 
 	include $_SERVER['DOCUMENT_ROOT'] . "/php/DatabaseManager.php"; 
 	
-	$soil = strval($_GET["soil"]);
+	$query = strval($_GET["query"]);
 
 	// Only get the last/latest values from the database
-	$query = mysqli_query($connection, "SELECT " . $soil . " FROM mysql.Soil_Data ORDER BY id LIMIT 6");
-	
+	$query = mysqli_query($connection, $query);
+	// Error check
+	if($query == FALSE){
+		die();
+	}
+
 	// Create array
 	$data = array();
 	
