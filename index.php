@@ -85,9 +85,11 @@
             $(document).ready(function () {
               // Fetch the soil type
               soilType = soilType.split(" ")[0].toLowerCase();
-              
+
+              var query = "SELECT " + soilType + " FROM Soil_Data ORDER BY id DESC LIMIT 6";
+
               var xmlhttp = new XMLHttpRequest();
-              xmlhttp.open("GET", "php/NPKContents.php?soil=" + soilType, true);
+              xmlhttp.open("GET", "php/NPKContents.php?query=" + query, true);
               xmlhttp.send();
                 
               xmlhttp.onreadystatechange = function () {
@@ -132,7 +134,10 @@
           include "php/DatabaseManager.php";
           
           $query = mysqli_query($connection, "SELECT * FROM mysql.Soil_Data");
-          
+          if($query == FALSE){
+            die();
+          }
+
           while($result_metadata = mysqli_fetch_assoc($query)){
             echo 
             "<tr align='center'>

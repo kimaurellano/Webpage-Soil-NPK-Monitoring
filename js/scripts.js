@@ -30,33 +30,11 @@ function defaultTab() {
   document.getElementById("defaultOpen").click();
 }
 
-function getNPKContent(soilType) {
-  $(document).ready(function () {
-    // Fetch the soil type
-    soilType = soilType.split(" ")[0].toLowerCase();
-
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", "php/NPKContents.php?soil=" + soilType, true);
-    xmlhttp.send();
-    
-    xmlhttp.onreadystatechange = function () {
-      if (xmlhttp.readyState === XMLHttpRequest.DONE && xmlhttp.status === 200) {
-        // The result we get from the URL
-        var jsonData = JSON.parse(xmlhttp.responseText);
-        var idx = 1;
-        jsonData.forEach(element => {
-          document.getElementById("field-" + idx).innerHTML = "Field " + idx + ": " + element[soilType] + "%";
-          idx += 1;
-        });
-      }
-    }
-  });
-}
-
 function loadLineChart() {
+  var query = "SELECT * FROM Soil_Data";
   $.ajax({
     type: "GET",
-    url: "php/NPKContents.php?soil=*",
+    url: "php/NPKContents.php?query=" + query,
     success: function (result) {
       var jsonData = JSON.parse(result);
 
