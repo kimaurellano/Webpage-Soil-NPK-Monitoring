@@ -48,9 +48,11 @@ html {
 .header {
   background: #1979ca;
   position: fixed;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
   top: 0;
   right: 0;
   left: 0;
+  z-index: 5;
 }
 
 .header-nav {
@@ -69,6 +71,33 @@ table {
   text-align: center;
 }
 
+/* The sensor selection of chart */
+.selector-box select {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  border: 1px solid #197aca8a;
+  background: #fff;
+  appearance: button;
+  outline: none;
+  color: #1979ca;
+  width: fit-content;
+  height: 5%;
+}
+
+.selector-box {
+  display: inline-flex;
+  margin-left: 75%;
+}
+
+.node-selection-prompt {
+  font-size: 15px;
+}
+
+.node-selection {
+  padding: 5px;
+  margin-left: 15px;
+}
+
 th {
   background-color: #fff;
   color: #1979ca;
@@ -83,6 +112,7 @@ tr:nth-child(even) {
 }
 
 #Graph {
+  position: relative;
   background-color: #fff;
 }
 
@@ -101,7 +131,7 @@ tr:nth-child(even) {
 }
 
 .f-path {
-  fill: #C1E082;
+  fill: #c1e082;
   stroke: none;
 }
 
