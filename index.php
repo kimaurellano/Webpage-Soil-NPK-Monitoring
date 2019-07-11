@@ -14,7 +14,7 @@
     
     <!-- Javascript -->
     <script src="js/scripts.js"></script>
-    <script type="text/javascript" src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     
     <!-- CSS -->
     <link href="styles/style.css" type="text/css" rel="stylesheet" />
@@ -32,99 +32,6 @@
   </head>
   
   <body>
-      <script>
-          $(document).ready( function () {
-            var soilTypes = ["NITROGEN", "PHOSPHOROUS", "POTASSIUM"];
-            var curSelected = 1;
-            
-            // Map nav button behaviour
-            $(".soil-npk-content > .nav").on("click", function(){
-              $(".page-indicator > circle").css({
-                "fill": "#ccc"
-              });
-
-              $(".page-indicator > .page-" + curSelected).css({
-                "fill": "#519edd"
-              });
-            });
-            
-            // Left nav button
-            $(".soil-npk-content > .nav-left > path").on("click", function() {
-              $(".npk-text > ul > li").fadeOut(300, function() {
-                $(".soil-content-type").text(soilTypes[curSelected] + " CONTENT");
-              }).fadeIn(300);
-              
-              if(curSelected < 1) {
-                return;
-              }
-
-              curSelected -= 1;
-
-              // Update NPK values by soil type
-              getNPKContent(soilTypes[curSelected]);
-            });
-            
-            // Right nav button
-            $(".soil-npk-content > .nav-right > path").on("click", function() {
-              $(".npk-text > ul > li").fadeOut(300, function() {
-                $(".soil-content-type").text(soilTypes[curSelected] + " CONTENT");
-              }).fadeIn(300);
-
-              if(curSelected > 1) {
-                return;
-              }
-
-              curSelected += 1;
-
-              // Update NPK values by soil type
-              getNPKContent(soilTypes[curSelected]);
-            });
-          } );
-
-          function getNPKContent(soilType) {
-            $(document).ready(function () {
-              // Fetch the soil type
-              soilType = soilType.split(" ")[0].toLowerCase();
-
-              // Sets new colour
-              var color;
-              if(soilType == "nitrogen"){
-                color = "#0000FF";
-              } else if(soilType == "phosphorous"){
-                color = "#A6FF00";
-              } else if(soilType == "potassium"){
-                color = "#FF5B00";
-              }
-              
-              // Apply
-              $(".f-path").css({
-                  "fill": color
-              });
-
-              var query = "SELECT " + soilType + " FROM Soil_Data ORDER BY id DESC LIMIT 6";
-
-              var xmlhttp = new XMLHttpRequest();
-              xmlhttp.open("GET", "php/NPKContents.php?query=" + query, true);
-              xmlhttp.send();
-                
-              xmlhttp.onreadystatechange = function () {
-                if (xmlhttp.readyState === XMLHttpRequest.DONE && xmlhttp.status === 200) {
-                  // The result we get from the URL
-                  var jsonData = JSON.parse(xmlhttp.responseText);
-                  var idx = 1;
-                  jsonData.forEach(element => {
-                    document.getElementById("field-" + idx).innerHTML = "Field " + idx + ": " + element[soilType] + "%";
-                    $(".f" + idx).css({
-                      "opacity": element[soilType] / 100
-                    });
-                    idx += 1;
-                  });
-                }
-              }
-            });
-          }
-      </script>
-
     <header class="header">
       <nav class="header-nav">
         <!-- The tab buttons -->
@@ -157,7 +64,7 @@
           // Connection to the database
           include "php/DatabaseManager.php";
           
-          $query = mysqli_query($connection, "SELECT * FROM mysql.Soil_Data");
+          $query = mysqli_query($connection, "SELECT * FROM soil_data");
           if($query == FALSE){
             die();
           }
@@ -180,6 +87,12 @@
 
     <!-- Graph content -->
     <div id="Graph" class="tabcontent">
+      <!-- Selection of 6 sensors -->
+      <div class="selector-box">
+        <h1 class="node-selection-prompt">Select sensor</h1>
+        <select class="node-selection">
+        </select>
+      </div>
       <!-- The chart -->
       <canvas id="myChart" height="100"></canvas>
     </div>
