@@ -229,7 +229,6 @@ window.addEventListener('load', () => {
     success: (result) => {
       const jsonData = JSON.parse(result);
       loadLineChart(jsonData[0].sensorid);
-      defOpSelected = jsonData[0].sensorid;
       // Populate the selection box
       jsonData.forEach((element) => {
         const sensorOption = new Option(element.sensorid, element.sensorid);
