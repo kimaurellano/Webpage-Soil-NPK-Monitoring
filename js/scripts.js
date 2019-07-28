@@ -128,9 +128,30 @@ function getNPKContent(soilType) {
         const jsonData = JSON.parse(xmlhttp.responseText);
         let idx = 1;
         jsonData.forEach((element) => {
+
+          const soilValue = parseInt(element[soilType]);
+          let soilState;
+          
+          
+          if(soilValue <= 3 && soilType == 'nitrogen'){ // 3% is considered low
+              soilState = 'LOW';
+          } else if (soilValue > 5 && soilValue <= 28 && soilType == 'nitrogen'){
+              soilState = 'MID';
+          } else if (soilValue > 28 && soilType == 'nitrogen'){
+              soilState = 'HIGH';
+          }
+          
+          if(soilValue <= 3 && soilType == 'phosphorous' || soilType == 'potassium'){ // 3% is considered low
+              soilState = 'LOW';
+          } else if (soilValue > 3 && soilValue <= 7 && soilType == 'phosphorous' || soilType == 'potassium'){
+              soilState = 'MID';
+          } else if (soilValue > 7 && soilType == 'phosphorous' || soilType == 'potassium'){
+              soilState = 'HIGH';
+          }
+          
           document
               .getElementById(`field-${idx}`)
-              .innerHTML = `Field ${idx}: ${element[soilType]}%`;
+              .innerHTML = `Field ${idx}: ${soilState}`;
           $('.f' + idx).css({
             'opacity': element[soilType] / 100,
           });
@@ -203,6 +224,23 @@ function refreshTime() {
             {timeZone: 'Singapore'});
   const formattedString = dateString.replace(', ', ' - ');
   document.getElementById('real-time').innerHTML = formattedString;
+
+  // Time stamps the last logged NPK values
+  const query = 'SELECT time FROM soil_data ORDER BY id DESC LIMIT 1';
+  $.ajax({
+    type: 'GET',
+    url: `php/NPKContents.php?query=${query}`,
+    success: (result) => {
+      const jsonData = JSON.parse(result);
+      // The x-axis label of chart
+      const time = jsonData.map((e) => {
+        return e.time;
+      });
+
+      document.getElementById('time-log').innerHTML = `Last log: ${time}`;
+      console.log(time);
+    },
+  });
 }
 
 /**
@@ -213,7 +251,28 @@ setInterval(refreshTime, 1000);
 /* EVENT LISTENERS */
 window.addEventListener('load', () => {
   // Initialize database on start
-  $('#myTable').DataTable();
+  $('#myTable').DataTable({
+    initComplete: function() {
+      this.api().columns().every( function() {
+        const column = this;
+        const select = $('<select><option value=""></option></select>')
+            .appendTo( $(column.footer()).empty() )
+            .on( 'change', function() {
+              const val = $.fn.dataTable.util.escapeRegex(
+                  $(this).val()
+              );
+
+              column
+                  .search( val ? '^'+val+'$' : '', true, false )
+                  .draw();
+            } );
+
+        column.data().unique().sort().each( function( d, j ) {
+          select.append( '<option value="'+d+'">'+d+'</option>' );
+        } );
+      } );
+    },
+  });
 
   // Default page on start
   document.getElementById('defaultOpen').click();
