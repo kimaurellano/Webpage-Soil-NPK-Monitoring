@@ -90,8 +90,7 @@
       <!-- Selection of 6 sensors -->
       <div class="selector-box">
         <h1 class="node-selection-prompt">Select sensor</h1>
-        <select class="node-selection">
-        </select>
+        <select class="node-selection"></select>
       </div>
       <!-- The chart -->
       <canvas id="myChart" height="100"></canvas>
@@ -100,7 +99,7 @@
     <!-- Map content -->
     <div id="Map" class="tabcontent">
       <div class="map-content-block map-detail">
-          <h3 class="time-log">Last log time: 30/06/2019 14:19:15</h3>
+          <h3 id="time-log">...</h3>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 536.57 538.07">
           <defs>
             <style>
