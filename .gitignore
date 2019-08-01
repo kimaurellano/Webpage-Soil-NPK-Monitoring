@@ -1,0 +1,12 @@
+[Dd]ashboard/
+[Ii]mg/
+[Nn]ode_modules/
+[Ww]ebalizer/
+[Xx]ampp/
+.vscode/
+package-lock.json
+package.json
+favicon.ico
+bitnami.css
+applications.html
+.eslintrc.json
