@@ -39,7 +39,7 @@ function loadLineChart(sensorid) {
     url: `php/NPKContents.php?query=${query}`,
     success: function(result) {
       const jsonData = JSON.parse(result);
-
+        
       // The x-axis label of chart
       const labels = jsonData.map((e) => {
         const arr = e.time.split(' ');
@@ -62,9 +62,8 @@ function loadLineChart(sensorid) {
       });
 
       const context = document.getElementById('myChart').getContext('2d');
-      const config = {
-        type: 'line',
-        data: {
+      
+      const data = {
           labels: labels,
           datasets: [{
             label: 'Nitrogen',
@@ -82,11 +81,14 @@ function loadLineChart(sensorid) {
             borderColor: 'rgba(255, 173, 0, 0.6)',
             fill: false,
           }],
-        },
-      };
-
+      }
+      
       // Create chart instance
-      new Chart(context, config);
+      new Chart(context, {
+          type:'line',
+          data:data
+          
+      });
     },
   });
 }
@@ -238,7 +240,6 @@ function refreshTime() {
       });
 
       document.getElementById('time-log').innerHTML = `Last log: ${time}`;
-      console.log(time);
     },
   });
 }
@@ -251,52 +252,18 @@ setInterval(refreshTime, 1000);
 /* EVENT LISTENERS */
 window.addEventListener('load', () => {
   // Initialize database on start
-  $('#myTable').DataTable({
-    initComplete: function() {
-      this.api().columns().every( function() {
-        const column = this;
-        const select = $('<select><option value=""></option></select>')
-            .appendTo( $(column.footer()).empty() )
-            .on( 'change', function() {
-              const val = $.fn.dataTable.util.escapeRegex(
-                  $(this).val()
-              );
-
-              column
-                  .search( val ? '^'+val+'$' : '', true, false )
-                  .draw();
-            } );
-
-        column.data().unique().sort().each( function( d, j ) {
-          select.append( '<option value="'+d+'">'+d+'</option>' );
-        } );
-      } );
-    },
-  });
+  $('#myTable').DataTable( {
+        "order": [[ 0, "desc" ]],
+        colReorder: {
+            realtime: true
+        }
+  } );
 
   // Default page on start
   document.getElementById('defaultOpen').click();
 
   // Load phosphorous data on start
   getNPKContent('phosphorous');
-
-  // Load the NodeMCUs ip addresses to the select box
-  const query = 'SELECT DISTINCT * FROM soil_data ORDER BY id DESC LIMIT 6';
-  $.ajax({
-    type: 'GET',
-    url: `php/NPKContents.php?query=${query}`,
-    success: (result) => {
-      const jsonData = JSON.parse(result);
-      loadLineChart(jsonData[0].sensorid);
-      // Populate the selection box
-      jsonData.forEach((element) => {
-        const sensorOption = new Option(element.sensorid, element.sensorid);
-        $(sensorOption).html(element.sensorid);
-        $('.node-selection')
-            .append(sensorOption);
-      });
-    },
-  });
 
   // Listen for which data must be in graph
   $('.selector-box').on('change', () => {

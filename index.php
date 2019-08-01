@@ -15,6 +15,8 @@
     <!-- Javascript -->
     <script src="js/scripts.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/colreorder/1.5.1/js/dataTables.colReorder.min.js"></script>
+
     
     <!-- CSS -->
     <link href="styles/style.css" type="text/css" rel="stylesheet" />
@@ -35,9 +37,9 @@
     <header class="header">
       <nav class="header-nav">
         <!-- The tab buttons -->
-        <button class="tablink" onclick="openPage('Logs', this)">LOGS</button>
+        <button id="defaultOpen" class="tablink" onclick="openPage('Logs', this)">LOGS</button>
         <button class="tablink" onclick="openPage('Graph', this)">GRAPH</button>
-        <button id="defaultOpen" class="tablink" onclick="openPage('Map', this)">MAP</button>
+        <button class="tablink" onclick="openPage('Map', this)">MAP</button>
         <h3 id="real-time">...</h3>
         <h3 class="title">NPK MONITOR</h3>
       </nav>
@@ -90,7 +92,14 @@
       <!-- Selection of 6 sensors -->
       <div class="selector-box">
         <h1 class="node-selection-prompt">Select sensor</h1>
-        <select class="node-selection"></select>
+        <select class="node-selection">
+            <option value="node-1">Node-1</option>
+            <option value="node-2">Node-2</option>
+            <option value="node-3">Node-3</option>
+            <option value="node-4">Node-4</option>
+            <option value="node-5">Node-5</option>
+            <option value="node-6">Node-6</option>
+        </select>
       </div>
       <!-- The chart -->
       <canvas id="myChart" height="100"></canvas>
