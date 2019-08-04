@@ -39,55 +39,72 @@ function loadLineChart(sensorid) {
     url: `php/NPKContents.php?query=${query}`,
     success: function(result) {
       const jsonData = JSON.parse(result);
-        
+
+      const datasets = [];
+      for (let i = jsonData.length - 1; i > (jsonData.length - 1) - 10; i--) {
+        datasets[i] = jsonData[i];
+      }
+
       // The x-axis label of chart
-      const labels = jsonData.map((e) => {
-        const arr = e.time.split(' ');
-        return arr[1];
+      const labels = datasets.map((e) => {
+        return e.id;
       });
 
       // Dataset of nitrogen
-      const n = jsonData.map((e) => {
+      const n = datasets.map((e) => {
         return e.nitrogen;
       });
 
       // Dataset of phosphorous
-      const p = jsonData.map((e) => {
+      const p = datasets.map((e) => {
         return e.phosphorous;
       });
 
       // Dataset of potassium
-      const k = jsonData.map((e) => {
+      const k = datasets.map((e) => {
         return e.potassium;
       });
 
       const context = document.getElementById('myChart').getContext('2d');
-      
+
       const data = {
-          labels: labels,
-          datasets: [{
-            label: 'Nitrogen',
-            data: n,
-            borderColor: 'rgba(17, 0, 255, 0.6)',
-            fill: false,
-          }, {
-            label: 'Phosphorous',
-            data: p,
-            borderColor: 'rgba(86, 255, 0, 0.6)',
-            fill: false,
-          }, {
-            label: 'Potassium',
-            data: k,
-            borderColor: 'rgba(255, 173, 0, 0.6)',
-            fill: false,
+        labels: labels,
+        datasets: [{
+          label: 'Nitrogen',
+          data: n,
+          borderColor: 'rgba(17, 0, 255, 0.6)',
+          fill: false,
+        }, {
+          label: 'Phosphorous',
+          data: p,
+          borderColor: 'rgba(86, 255, 0, 0.6)',
+          fill: false,
+        }, {
+          label: 'Potassium',
+          data: k,
+          borderColor: 'rgba(255, 173, 0, 0.6)',
+          fill: false,
+        }],
+      };
+
+      const options = {
+        scales: {
+          xAxes: [{
+            type: 'time',
+            ticks: {
+              beginAtZero: true,
+              autoSkip: true,
+              maxTicksLimit: 20,
+            },
           }],
-      }
-      
+        },
+      };
+
       // Create chart instance
       new Chart(context, {
-          type:'line',
-          data:data
-          
+        type: 'line',
+        options: options,
+        data: data,
       });
     },
   });
@@ -130,27 +147,34 @@ function getNPKContent(soilType) {
         const jsonData = JSON.parse(xmlhttp.responseText);
         let idx = 1;
         jsonData.forEach((element) => {
-
           const soilValue = parseInt(element[soilType]);
           let soilState;
-          
-          
-          if(soilValue <= 3 && soilType == 'nitrogen'){ // 3% is considered low
-              soilState = 'LOW';
-          } else if (soilValue > 5 && soilValue <= 28 && soilType == 'nitrogen'){
-              soilState = 'MID';
-          } else if (soilValue > 28 && soilType == 'nitrogen'){
-              soilState = 'HIGH';
+
+          // 3% is considered low
+          if (soilValue <= 3 && soilType == 'nitrogen') { 
+            soilState = 'LOW';
+          } else if (soilValue > 5 &&
+            soilValue <= 28 &&
+            soilType == 'nitrogen') {
+            soilState = 'MID';
+          } else if (soilValue > 28 && soilType == 'nitrogen') {
+            soilState = 'HIGH';
           }
-          
-          if(soilValue <= 3 && soilType == 'phosphorous' || soilType == 'potassium'){ // 3% is considered low
-              soilState = 'LOW';
-          } else if (soilValue > 3 && soilValue <= 7 && soilType == 'phosphorous' || soilType == 'potassium'){
-              soilState = 'MID';
-          } else if (soilValue > 7 && soilType == 'phosphorous' || soilType == 'potassium'){
-              soilState = 'HIGH';
+
+          if (soilValue <= 3 && soilType == 'phosphorous' ||
+            soilType == 'potassium') { // 3% is considered low
+            soilState = 'LOW';
+          } else if (soilValue > 3 &&
+            soilValue <= 7 &&
+            soilType == 'phosphorous' ||
+            soilType == 'potassium') {
+            soilState = 'MID';
+          } else if (soilValue > 7 &&
+            soilType == 'phosphorous' ||
+            soilType == 'potassium') {
+            soilState = 'HIGH';
           }
-          
+
           document
               .getElementById(`field-${idx}`)
               .innerHTML = `Field ${idx}: ${soilState}`;
@@ -252,11 +276,8 @@ setInterval(refreshTime, 1000);
 /* EVENT LISTENERS */
 window.addEventListener('load', () => {
   // Initialize database on start
-  $('#myTable').DataTable( {
-        "order": [[ 0, "desc" ]],
-        colReorder: {
-            realtime: true
-        }
+  $('#myTable').DataTable({
+    'order': [[0, 'desc']],
   } );
 
   // Default page on start
