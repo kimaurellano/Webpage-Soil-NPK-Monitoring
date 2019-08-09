@@ -16,6 +16,7 @@
     <!-- Javascript -->
     <script src="js/scripts.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.19/api/fnReloadAjax.js"></script>
 
     <!-- CSS -->
     <link href="styles/style.css" type="text/css" rel="stylesheet" />
@@ -56,6 +57,7 @@
             <th>nitrogen content</th>
             <th>phosphorous content</th>
             <th>potassium content</th>
+            <th>state</th>
           </tr>
         </thead>
         
@@ -79,6 +81,7 @@
               <td> " . $result_metadata['nitrogen'] . "</td>
               <td> " . $result_metadata['phosphorous'] . "</td>
               <td> " . $result_metadata['potassium'] . "</td>
+              <td> " . $result_metadata['state'] . "</td>
             </tr>";
           }
         ?>
