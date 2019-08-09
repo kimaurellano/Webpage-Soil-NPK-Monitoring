@@ -71,6 +71,10 @@ table {
   text-align: center;
 }
 
+.validation-color {
+  background-color: #ffc355 !important;
+}
+
 /* The sensor selection of chart */
 .selector-box select {
   font-family: "Montserrat", sans-serif;
