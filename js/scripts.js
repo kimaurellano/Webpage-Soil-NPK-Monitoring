@@ -275,10 +275,19 @@ setInterval(refreshTime, 1000);
 
 /* EVENT LISTENERS */
 window.addEventListener('load', () => {
-  // Initialize database on start
   $('#myTable').DataTable({
+    // Descending
     'order': [[0, 'desc']],
-  } );
+    // Hide 'state' column
+    'columnDefs': [{'visible': false, 'targets': 6}],
+    // Will check the data loaded on the table
+    'createdRow': function(row, data, dataIndex) {
+      // Change row color base on value
+      if (data[6] == 'PROCEDURALLY-FILLED') {
+        $(row).addClass('validation-color');
+      }
+    },
+  });
 
   // Default page on start
   document.getElementById('defaultOpen').click();
