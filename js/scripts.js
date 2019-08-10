@@ -40,35 +40,24 @@ function loadLineChart(sensorid) {
     success: function(result) {
       const jsonData = JSON.parse(result);
 
-      const datasets = [];
-      for (let i = jsonData.length - 1; i > (jsonData.length - 1) - 10; i--) {
-        datasets[i] = jsonData[i];
-      }
-
-      // The x-axis label of chart
-      const labels = datasets.map((e) => {
-        return e.id;
-      });
-
       // Dataset of nitrogen
-      const n = datasets.map((e) => {
-        return e.nitrogen;
-      });
+      const n = new Array(10);
+      const p = new Array(10);
+      const k = new Array(10);
+      const time = new Array(10);
 
-      // Dataset of phosphorous
-      const p = datasets.map((e) => {
-        return e.phosphorous;
-      });
-
-      // Dataset of potassium
-      const k = datasets.map((e) => {
-        return e.potassium;
-      });
+      for (let i = 0; i < n.length; i++) {
+        console.log(jsonData[i].nitrogen);
+        n[i] = jsonData[i]['nitrogen'];
+        p[i] = jsonData[i]['phosphorous'];
+        k[i] = jsonData[i]['potassium'];
+        time[i] = jsonData[i]['time'];
+      }
 
       const context = document.getElementById('myChart').getContext('2d');
 
       const data = {
-        labels: labels,
+        labels: time,
         datasets: [{
           label: 'Nitrogen',
           data: n,
@@ -87,27 +76,21 @@ function loadLineChart(sensorid) {
         }],
       };
 
-      const options = {
-        scales: {
-          xAxes: [{
-            type: 'time',
-            ticks: {
-              beginAtZero: true,
-              autoSkip: true,
-              maxTicksLimit: 20,
-            },
-          }],
-        },
-      };
-
       // Create chart instance
       new Chart(context, {
         type: 'line',
-        options: options,
         data: data,
       });
     },
   });
+}
+
+/**
+ * @param {array} array - list of data
+ * @return {array} array
+ */
+function arrayOfData(array) {
+  return null;
 }
 
 /**
@@ -275,6 +258,7 @@ setInterval(refreshTime, 1000);
 
 /* EVENT LISTENERS */
 window.addEventListener('load', () => {
+  // Load datatable
   $('#myTable').DataTable({
     // Descending
     'order': [[0, 'desc']],
@@ -288,6 +272,9 @@ window.addEventListener('load', () => {
       }
     },
   });
+
+  // Load chart
+  loadLineChart('Node-1');
 
   // Default page on start
   document.getElementById('defaultOpen').click();
