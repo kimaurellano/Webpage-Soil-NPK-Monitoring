@@ -102,6 +102,15 @@
             <option value="node-5">Node-5</option>
             <option value="node-6">Node-6</option>
         </select>
+        <h1 class="from-selection-prompt">Range</h1>
+        <select class="from-selection">
+          <option value="from-value">date from</option>
+        </select>
+        <select class="to-selection">
+          <option value="to-value">date to</option>
+        </select>
+        <div class="button-set-range">
+        </div>
       </div>
       <!-- The chart -->
       <canvas id="myChart" height="100"></canvas>
