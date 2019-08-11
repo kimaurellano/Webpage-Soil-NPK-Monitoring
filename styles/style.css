@@ -76,7 +76,7 @@ table {
 }
 
 /* The sensor selection of chart */
-.selector-box select {
+.selector-box > select {
   font-family: "Montserrat", sans-serif;
   font-size: 18px;
   border: 1px solid #197aca8a;
@@ -90,7 +90,29 @@ table {
 
 .selector-box {
   display: inline-flex;
-  margin-left: 75%;
+  width: 100%;
+  margin-left: 5%;
+}
+
+.from-selection-prompt {
+  margin-left: 30px;
+  font-size: 15px;
+}
+
+.from-selection {
+  margin-left: 15px;
+  padding: 5px;
+  font-size: 15px;
+}
+
+.to-selection-prompt {
+  font-size: 15px;
+}
+
+.to-selection {
+  margin-left: 15px;
+  padding: 5px;
+  font-size: 15px;
 }
 
 .node-selection-prompt {

@@ -30,31 +30,48 @@ function openPage(pageToOpen, element) { // eslint-disable-line no-unused-vars
 /**
  * Populates NPK chart
  * @param {string} sensorid - The sensor we get info from
+ * @param {int} from - The amount of data to be displayed
+ * @param {int} to - The amount of data to be displayed
  */
-function loadLineChart(sensorid) {
-  const query =
-    `SELECT * FROM soil_data WHERE sensorid='${sensorid}' ORDER BY id ASC`;
+function loadLineChart(sensorid, from, to) {
+  let query = null;
+  if (from != '' && to != '') {
+    query =
+    `SELECT * FROM soil_data 
+     WHERE time BETWEEN '${from}' AND '${to}' AND sensorid = '${sensorid}'
+     ORDER BY id DESC`;
+  } else {
+    // Will only display the latest 10 data
+    query =
+      `SELECT * FROM soil_data 
+       WHERE sensorid='${sensorid}' 
+       ORDER BY id DESC LIMIT 10`;
+  }
+
   $.ajax({
     type: 'GET',
     url: `php/NPKContents.php?query=${query}`,
     success: function(result) {
+      const context = document.getElementById('myChart').getContext('2d');
+
       const jsonData = JSON.parse(result);
 
-      // Dataset of nitrogen
-      const n = new Array(10);
-      const p = new Array(10);
-      const k = new Array(10);
-      const time = new Array(10);
+      console.log(`Query of: ${query}`);
+      console.log(`line length ${jsonData.length}`);
+      console.log(jsonData);
+
+      // Collect 10 data only
+      const n = new Array(jsonData.length);
+      const p = new Array(jsonData.length);
+      const k = new Array(jsonData.length);
+      const time = new Array(jsonData.length);
 
       for (let i = 0; i < n.length; i++) {
-        console.log(jsonData[i].nitrogen);
-        n[i] = jsonData[i]['nitrogen'];
-        p[i] = jsonData[i]['phosphorous'];
-        k[i] = jsonData[i]['potassium'];
-        time[i] = jsonData[i]['time'];
+        n[i] = jsonData[i].nitrogen;
+        p[i] = jsonData[i].phosphorous;
+        k[i] = jsonData[i].potassium;
+        time[i] = jsonData[i].time;
       }
-
-      const context = document.getElementById('myChart').getContext('2d');
 
       const data = {
         labels: time,
@@ -76,7 +93,7 @@ function loadLineChart(sensorid) {
         }],
       };
 
-      // Create chart instance
+      // Create chart instance with specified configurations
       new Chart(context, {
         type: 'line',
         data: data,
@@ -86,11 +103,26 @@ function loadLineChart(sensorid) {
 }
 
 /**
- * @param {array} array - list of data
- * @return {array} array
+ * Loads range in chart
+ * @param {element} selectionClass - The selection to load
  */
-function arrayOfData(array) {
-  return null;
+function loadRangeSelection(selectionClass) {
+  // Load the timestamps to the range box
+  const query = 'SELECT id, time FROM soil_data ORDER BY id ASC';
+  $.ajax({
+    type: 'GET',
+    url: `php/NPKContents.php?query=${query}`,
+    success: (result) => {
+      const jsonData = JSON.parse(result);
+      // Populate the selection box
+      jsonData.forEach((element) => {
+        console.log(element);
+        const timeStamp = new Option(element.time, element.time);
+        $(timeStamp).html(element.time);
+        $(selectionClass).append(timeStamp);
+      });
+    },
+  });
 }
 
 /**
@@ -273,8 +305,12 @@ window.addEventListener('load', () => {
     },
   });
 
-  // Load chart
-  loadLineChart('Node-1');
+  // Populate chart with default of 10 Node-1 datas
+  loadLineChart('Node-1', '', '');
+
+  // Populate range selection
+  loadRangeSelection('.from-selection');
+  loadRangeSelection('.to-selection');
 
   // Default page on start
   document.getElementById('defaultOpen').click();
@@ -282,10 +318,48 @@ window.addEventListener('load', () => {
   // Load phosphorous data on start
   getNPKContent('phosphorous');
 
-  // Listen for which data must be in graph
-  $('.selector-box').on('change', () => {
-    const selectedVal = $('.selector-box option:selected').text();
-    loadLineChart(selectedVal);
+  // Register listener upon to-selection change
+  $('.selector-box > .to-selection').on('change', () => {
+    const selectedVal =
+      $('.selector-box > .node-selection option:selected').text();
+    const from =
+      $('.selector-box > .from-selection option:selected').text();
+    let to =
+      $('.selector-box > .to-selection option:selected').text();
+
+    if (to < from) {
+      alert('end range value should be higher than start range');
+
+      // Make from and to selection the same
+      $('.selector-box > .to-selection option').filter(function() {
+        to = from;
+        return $(this).text() == from;
+      }).prop('selected', true);
+
+      console.log(`${from} and ${to}`);
+
+      loadLineChart(selectedVal, from, to);
+    }
+  });
+
+  // Register listener upon node selection change
+  $('.selector-box > .node-selection').on('change', () => {
+    const selectedVal =
+      $('.selector-box > .node-selection option:selected').text();
+    const from =
+      $('.selector-box > .from-selection option:selected').text();
+    const to =
+      $('.selector-box > .to-selection option:selected').text();
+
+    console.log(`${from} and ${to}`);
+
+    // We do not want to load with invalid range values
+    if (from == 'date from' || to == 'date to') {
+      loadLineChart(selectedVal, '', '');
+      return;
+    }
+
+    loadLineChart(selectedVal, from, to);
   });
 
   // Map field emphasis on hover
